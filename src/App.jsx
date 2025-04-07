@@ -25,7 +25,7 @@ function App() {
   const generateChapter = async () => {
     setLoading(true);
     try {
-      const response = await fetch("https://your-backend-url/api/generate-chapter", {
+      const response = await fetch("https://chapter-api-live.onrender.com/api/generate-chapter", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
