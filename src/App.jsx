@@ -1,8 +1,7 @@
 // src/App.jsx
 import React, { useState } from "react";
-import "./index.css";
 
-function App() {
+export default function App() {
   const [form, setForm] = useState({
     bookTitle: "",
     chapterTitle: "",
@@ -14,6 +13,7 @@ function App() {
     tone: "",
     pov: "Third person",
     tense: "Past",
+    theme: "",
   });
   const [generatedChapter, setGeneratedChapter] = useState("");
   const [loading, setLoading] = useState(false);
@@ -38,37 +38,54 @@ function App() {
     setLoading(false);
   };
 
+  const regenerateChapter = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("https://chapter-api-live.onrender.com/api/regenerate-chapter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const data = await response.json();
+      setGeneratedChapter(data.chapter || "Error regenerating chapter.");
+    } catch (error) {
+      setGeneratedChapter("Failed to regenerate chapter. Please try again later.");
+    }
+    setLoading(false);
+  };
+
   return (
-    <div className="container">
-      <h1>Chapter Generator</h1>
-      <div className="form">
-        {Object.entries(form).map(([key, value]) => (
-          <div key={key} className="form-group">
-            <label>{key.replace(/([A-Z])/g, ' $1')}</label>
-            {key === "summary" || key === "characters" || key === "events" ? (
-              <textarea name={key} value={value} onChange={handleChange} />
-            ) : (
-              <input
-                type={key === "wordCount" ? "number" : "text"}
-                name={key}
-                value={value}
-                onChange={handleChange}
-              />
-            )}
-          </div>
+    <div className="p-6 max-w-3xl mx-auto">
+      <h1 className="text-2xl font-bold mb-4">Chapter Generator</h1>
+      <div className="grid gap-4">
+        {Object.keys(form).map((key) => (
+          <input
+            key={key}
+            name={key}
+            value={form[key]}
+            onChange={handleChange}
+            placeholder={key.replace(/([A-Z])/g, " $1")}
+            className="border p-2 rounded"
+          />
         ))}
-        <button onClick={generateChapter} disabled={loading}>
+        <button
+          onClick={generateChapter}
+          disabled={loading}
+          className="bg-blue-600 text-white py-2 px-4 rounded shadow hover:bg-blue-700"
+        >
           {loading ? "Generating..." : "Generate Chapter"}
         </button>
+        <button
+          onClick={regenerateChapter}
+          disabled={loading}
+          className="bg-green-600 text-white py-2 px-4 rounded shadow hover:bg-green-700"
+        >
+          {loading ? "Regenerating..." : "Regenerate with More Dialogue"}
+        </button>
       </div>
-      {generatedChapter && (
-        <div className="output">
-          <h2>Generated Chapter</h2>
-          <pre>{generatedChapter}</pre>
-        </div>
-      )}
+      <div className="mt-6 whitespace-pre-wrap bg-gray-100 p-4 rounded">
+        {generatedChapter}
+      </div>
     </div>
   );
 }
-
-export default App;
