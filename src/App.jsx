@@ -54,36 +54,68 @@ export default function App() {
     setLoading(false);
   };
 
+  const storyFields = ["bookTitle", "chapterTitle", "summary", "characters", "events", "scripture"];
+  const styleFields = ["tone", "pov", "tense", "theme", "wordCount"];
+
   return (
-    <div className="p-6 max-w-3xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Chapter Generator</h1>
-      <div className="grid gap-4">
-        {Object.keys(form).map((key) => (
-          <input
-            key={key}
-            name={key}
-            value={form[key]}
-            onChange={handleChange}
-            placeholder={key.replace(/([A-Z])/g, " $1")}
-            className="border p-2 rounded"
-          />
-        ))}
-        <button
-          onClick={generateChapter}
-          disabled={loading}
-          className="bg-blue-600 text-white py-2 px-4 rounded shadow hover:bg-blue-700"
-        >
-          {loading ? "Generating..." : "Generate Chapter"}
-        </button>
-        <button
-          onClick={regenerateChapter}
-          disabled={loading}
-          className="bg-green-600 text-white py-2 px-4 rounded shadow hover:bg-green-700"
-        >
-          {loading ? "Regenerating..." : "Regenerate with More Dialogue"}
-        </button>
+    <div className="p-10 max-w-4xl mx-auto font-sans text-xl">
+      <h1 className="text-5xl font-bold mb-10 text-center">Chapter Generator</h1>
+
+      <div className="grid grid-cols-1 gap-8">
+        <div>
+          <h2 className="text-3xl font-semibold mb-4 text-blue-700">Story Setup</h2>
+          {storyFields.map((key) => (
+            <div key={key} className="flex flex-col mb-4">
+              <label className="capitalize mb-2 text-xl font-semibold text-gray-800">
+                {key.replace(/([A-Z])/g, " $1")}
+              </label>
+              <input
+                name={key}
+                value={form[key]}
+                onChange={handleChange}
+                className="border p-4 rounded text-xl shadow-md"
+              />
+            </div>
+          ))}
+        </div>
+
+        <div>
+          <h2 className="text-3xl font-semibold mb-4 text-green-700">Tone & Style</h2>
+          {styleFields.map((key) => (
+            <div key={key} className="flex flex-col mb-4">
+              <label className="capitalize mb-2 text-xl font-semibold text-gray-800">
+                {key.replace(/([A-Z])/g, " $1")}
+              </label>
+              <input
+                name={key}
+                value={form[key]}
+                onChange={handleChange}
+                className="border p-4 rounded text-xl shadow-md"
+              />
+            </div>
+          ))}
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-6 mt-6">
+          <button
+            onClick={generateChapter}
+            disabled={loading}
+            className="bg-blue-600 text-white py-4 px-6 text-xl rounded shadow hover:bg-blue-700 w-full"
+          >
+            {loading ? "Generating..." : "Generate Chapter"}
+          </button>
+
+          <button
+            onClick={regenerateChapter}
+            disabled={loading}
+            className="bg-green-600 text-white py-4 px-6 text-xl rounded shadow hover:bg-green-700 w-full"
+          >
+            {loading ? "Regenerating..." : "Regenerate with More Dialogue"}
+          </button>
+        </div>
       </div>
-      <div className="mt-6 whitespace-pre-wrap bg-gray-100 p-4 rounded">
+
+      <div className="mt-12 whitespace-pre-wrap bg-gray-100 p-8 rounded shadow text-xl leading-relaxed">
         {generatedChapter}
       </div>
     </div>
